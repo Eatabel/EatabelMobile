@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useState } from 'react';
-import { Image, TouchableOpacity, StyleSheet, Text, View } from 'react-native';
+import { AsyncStorage, Image, TouchableOpacity, StyleSheet, Text, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import AppLoading from 'expo-app-loading';
 import { useFonts } from 'expo-font';
@@ -27,6 +27,19 @@ const Setup = ({ navigation }) => {
     Shellfish: [counterShellFish, setCounterShellFish],
     Eggs: [counterEggs, setCounterEggs],
     Milk: [counterMilk, setCounterMilk]
+  };
+
+  const storePreferences = () => {
+    AsyncStorage.setItem('Chicken', JSON.stringify(counterChicken));
+    AsyncStorage.setItem('Turkey', JSON.stringify(counterTurkey));
+    AsyncStorage.setItem('Duck', JSON.stringify(counterDuck));
+    AsyncStorage.setItem('Beef', JSON.stringify(counterBeef));
+    AsyncStorage.setItem('Pork', JSON.stringify(counterPork));
+    AsyncStorage.setItem('Fish', JSON.stringify(counterFish));
+    AsyncStorage.setItem('Shellfish', JSON.stringify(counterShellFish));
+    AsyncStorage.setItem('Eggs', JSON.stringify(counterEggs));
+    AsyncStorage.setItem('Milk', JSON.stringify(counterMilk));
+    AsyncStorage.setItem('Setup', 'complete');
   };
 
   let [fontsLoaded] = useFonts(fontMappings);
@@ -81,7 +94,10 @@ const Setup = ({ navigation }) => {
         </View>
         <TouchableOpacity
           style={styles.button}
-          onPress={() => navigation.navigate('Home')}
+          onPress={() => {
+            storePreferences();
+            navigation.navigate('Home');
+          }}
           underlayColor='#fff'>
           <Text style={styles.startText}>Next</Text>
         </TouchableOpacity>

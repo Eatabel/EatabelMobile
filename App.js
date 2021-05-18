@@ -3,7 +3,8 @@ import React from 'react';
 
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
-import { Landing } from './screens';
+import Tabs from './navigation/tabs';
+import { Home, Landing, Product, Results, Search, Settings, Setup } from './screens';
 const Stack = createStackNavigator();
 
 export default function App() {
@@ -13,9 +14,15 @@ export default function App() {
         screenOptions={{
           headerShown: false,
         }}
-        initialRouteName={"Landing"}
+        initialRouteName={"Home"}
       >
+        <Stack.Screen name="Home" component={Tabs} />
         <Stack.Screen name="Landing" component={Landing} />
+        <Stack.Screen name="Product" component={Product} />
+        <Stack.Screen name="Results" component={Results} />
+        <Stack.Screen name="Search" component={Search} />
+        <Stack.Screen name="Settings" component={Settings} />
+        <Stack.Screen name="Setup" component={Setup} />
       </Stack.Navigator>
     </NavigationContainer>
   );

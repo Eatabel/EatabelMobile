@@ -27,7 +27,7 @@ const Tabs = () => {
               style={{
                 width: 25,
                 height: 25,
-                tintColor: focused ? colors.primaryColor : colors.secondaryColor
+                tintColor: focused ? colors.primary : colors.secondary
               }}
             />
           )
@@ -44,7 +44,7 @@ const Tabs = () => {
               style={{
                 width: 25,
                 height: 25,
-                tintColor: focused ? colors.primaryColor : colors.secondaryColor
+                tintColor: focused ? colors.primary : colors.secondary
               }}
             />
           )
@@ -61,7 +61,7 @@ const Tabs = () => {
               style={{
                 width: 25,
                 height: 25,
-                tintColor: focused ? colors.primaryColor : colors.secondaryColor
+                tintColor: focused ? colors.primary : colors.secondary
               }}
             />
           )

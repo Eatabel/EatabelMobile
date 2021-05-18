@@ -7,10 +7,6 @@ import { useFonts } from 'expo-font';
 import { Icon } from 'react-native-elements';
 
 const Landing = () => {
-  let [fontsLoaded] = useFonts({
-    'IkarosBold': require('../assets/fonts/Ikaros-Regular-400.otf'),
-    'IkarosLight': require('../assets/fonts/Ikaros-Light-300.otf'),
-  });
   return (
     <View style={styles.container}>
       <LinearGradient

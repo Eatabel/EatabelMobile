@@ -7,7 +7,15 @@ const Tab = createBottomTabNavigator();
 
 const Tabs = () => {
   return (
-    <Tab.Navigator>
+    <Tab.Navigator
+      tabBarOptions={{
+        showLabel: false,
+        style: {
+          borderTopWidth: 0,
+          backgroundColor: 'transparent',
+        }
+      }}
+    >
       <Tab.Screen
         name="Home"
         component={Home}

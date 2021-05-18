@@ -6,8 +6,13 @@ import AppLoading from 'expo-app-loading';
 import { useFonts } from 'expo-font';
 import { colors, icons, fontMappings } from '../constants';
 
-const Landing = () => {
+const Landing = ({ navigation }) => {
   let [fontsLoaded] = useFonts(fontMappings);
+  if (!fontsLoaded) {
+    return (
+      <View><Text>Loading</Text></View>
+    );
+  }
   return (
     <View style={styles.container}>
       <LinearGradient
@@ -23,10 +28,10 @@ const Landing = () => {
         <Text style={styles.Heading}>Eatabel</Text>
         <Text style={styles.SubHeading}>A Nutritional App</Text>
         <TouchableOpacity
-          style={styles.loginScreenButton}
-          onPress={() => navigate('Home')}
+          style={styles.button}
+          onPress={() => navigation.navigate('Setup')}
           underlayColor='#fff'>
-          <Text style={styles.loginText}>Get Started</Text>
+          <Text style={styles.startText}>Get Started</Text>
         </TouchableOpacity>
       </LinearGradient>
     </View>
@@ -50,7 +55,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  loginScreenButton: {
+  button: {
     marginTop: 40,
     paddingTop: 10,
     paddingBottom: 10,
@@ -59,9 +64,10 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     paddingRight: 10
   },
-  loginText: {
+  startText: {
     color: '#fff',
     textAlign: 'center',
+    fontFamily: 'BrandonRegular',
   }
 
 });

@@ -1,3 +1,4 @@
 import icons from './icons';
 import {colors} from './styling';
-export { icons, colors };
+import fontMappings from './fonts';
+export { icons, colors, fontMappings};

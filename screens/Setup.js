@@ -82,7 +82,7 @@ const Setup = ({ navigation }) => {
                             tintColor: food[Object.keys(foodItem)[0]][0] ? colors.primary : colors.additionalColor2,
                           }}
                         />
-                        <Text style={styles.foodTitle}>{Object.keys(foodItem)[0]}</Text>
+                        <Text style={food[Object.keys(foodItem)[0]][0] ? styles.foodTitle : styles.deselectedTitle}>{Object.keys(foodItem)[0]}</Text>
                       </TouchableOpacity>
                     );
                   })}
@@ -145,6 +145,10 @@ const styles = StyleSheet.create({
   foodTitle: {
     fontFamily: 'BrandonRegular',
     color: colors.additionalColor1,
+  },
+  deselectedTitle: {
+    fontFamily: 'BrandonRegular',
+    color: colors.additionalColor2,
   },
   button: {
     paddingTop: 10,

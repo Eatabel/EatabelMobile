@@ -12,26 +12,39 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      initialPage: 'Loading'
+      fonts: false,
+      pageToNav: 'Landing',
+      pageReady: false,
     };
   }
   componentDidMount() {
-    Font.loadAsync(fontMappings);
+    Font.loadAsync(fontMappings)
+      .then(() => {
+        this.setState({fonts: true});
+      });
     AsyncStorage.getItem('Setup')
       .then((data) => {
         const route = data === 'complete' ? 'Home' : 'Landing';
-        this.setState({initialPage: route});
+        this.setState({pageToNav: route});
+        if (this.state.fonts) {
+          this.setState({pageReady: true});
+        }
       });
   }
 
   render() {
+    if (!this.state.pageReady) {
+      return (
+        <Loading />
+      );
+    }
     return (
       <NavigationContainer>
         <Stack.Navigator
           screenOptions={{
             headerShown: false,
           }}
-          initialRouteName={this.state.initialPage}
+          initialRouteName={this.state.pageToNav}
         >
           <Stack.Screen name="Home" component={Tabs} />
           <Stack.Screen name="Landing" component={Landing} />

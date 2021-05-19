@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {Component} from 'react';
 import { Animated, AsyncStorage, Easing, Image, StyleSheet, Text, View } from 'react-native';
 import axios from 'axios';
-import { colors, icons, fontMappings, sizes } from '../constants';
+import { colors, icons, fontMappings, restrictedMappings, sizes } from '../constants';
 import { LinearGradient } from 'expo-linear-gradient';
 
 
@@ -15,11 +15,6 @@ class Product extends Component {
       colors: ['#3393E4', '#715886'],
       isEatabel: true,
       violations: [],
-    };
-    this.restrictedMappings = {
-      Beef: ['beef', 'gelatin'],
-      Pork: ['pork', 'lard', 'gelatin'],
-      ' ': []
     };
     this.spinValue = new Animated.Value(0);
   }
@@ -83,7 +78,7 @@ class Product extends Component {
         restrictions.pop();
         var allRestrictedIngredients = [];
         for (var i = 0; i < restrictions.length; i++) {
-          var restrictedIngredients = this.restrictedMappings[restrictions[i]];
+          var restrictedIngredients = restrictedMappings[restrictions[i]];
           for (var j = 0; j < restrictedIngredients.length; j++) {
             if (!allRestrictedIngredients.includes(restrictedIngredients[j])) {
               allRestrictedIngredients.push(restrictedIngredients[j]);

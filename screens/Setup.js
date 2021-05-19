@@ -30,15 +30,14 @@ const Setup = ({ navigation }) => {
   };
 
   const storePreferences = () => {
-    AsyncStorage.setItem('Chicken', JSON.stringify(counterChicken));
-    AsyncStorage.setItem('Turkey', JSON.stringify(counterTurkey));
-    AsyncStorage.setItem('Duck', JSON.stringify(counterDuck));
-    AsyncStorage.setItem('Beef', JSON.stringify(counterBeef));
-    AsyncStorage.setItem('Pork', JSON.stringify(counterPork));
-    AsyncStorage.setItem('Fish', JSON.stringify(counterFish));
-    AsyncStorage.setItem('Shellfish', JSON.stringify(counterShellFish));
-    AsyncStorage.setItem('Eggs', JSON.stringify(counterEggs));
-    AsyncStorage.setItem('Milk', JSON.stringify(counterMilk));
+    let prefString = '';
+    for (var key in food) {
+      if (!food[key][0]) {
+        prefString += key;
+        prefString += ' ';
+      }
+    }
+    AsyncStorage.setItem('prefString', prefString);
     AsyncStorage.setItem('Setup', 'complete');
   };
 
@@ -66,12 +65,12 @@ const Setup = ({ navigation }) => {
         <View style={styles.category}>
           {dietaryMappings.map((category) => {
             return (
-              <View>
+              <View key={Object.keys(category)[0]}>
                 <Text style={styles.subheading}>{Object.keys(category)[0]}</Text>
                 <View style={styles.row}>
                   {category[Object.keys(category)[0]].map((foodItem) => {
                     return (
-                      <TouchableOpacity style={styles.foodComponent} onPress={() => {
+                      <TouchableOpacity style={styles.foodComponent} key={foodItem[Object.keys(foodItem)[0]]}onPress={() => {
                         food[Object.keys(foodItem)[0]][1](!food[Object.keys(foodItem)[0]][0]);
                       }}>
                         <Image
@@ -136,7 +135,7 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     justifyContent: 'space-evenly',
-    marginBottom: 30,
+    marginBottom: 10,
   },
   foodComponent: {
     alignItems: 'center',

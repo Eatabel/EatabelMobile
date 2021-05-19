@@ -3,7 +3,7 @@ export const colors = {
   secondary: '#cacaca',
   tertiary: '#000',
   additionalColor1: '#02215c',
-  additionalColor2: '#616161'
+  additionalColor2: '#de6859'
 };
 
 export const sizes = {

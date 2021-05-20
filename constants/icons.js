@@ -14,6 +14,7 @@ export const shrimp = require ('../assets/icons/dietary/shrimp.png');
 export const turkey = require ('../assets/icons/dietary/turkey.png');
 
 export const loading = require ('../assets/icons/general/loading.png');
+export const back = require ('../assets/icons/general/back.png');
 
 export default {
   home,
@@ -29,5 +30,6 @@ export default {
   pig,
   shrimp,
   turkey,
-  loading
+  loading,
+  back,
 };

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import { ScrollView, FlatList, Image, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { AsyncStorage, ScrollView, FlatList, Image, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { colors, icons, fontMappings } from '../constants';
 import { useFonts } from 'expo-font';
 
@@ -31,14 +31,23 @@ class Home extends Component {
       .catch(() => console.log('Could not fetch data from API'));
   }
 
+  handleClick(food) {
+    AsyncStorage.setItem('foodLookup', 'local')
+      .then(() => {
+        AsyncStorage.setItem('foodItem', JSON.stringify(food));
+      })
+      .then((this.props.navigation.navigate('Product')))
+      .catch(() => console.log('Could Not Store & Navigate'));
+  }
+
   renderSearchResults() {
     return (
       <ScrollView style={styles.searchResults}>
         {this.state.results.hints.map((food) => {
           return (
-            <TouchableOpacity style={styles.searchResult} onPress={() => console.log('clicked')}>
+            <TouchableOpacity key={Math.random() * 10000000} style={styles.searchResult} onPress={() => this.handleClick.bind(this)(food)}>
               <View style={styles.productText}>
-                <Text style={styles.title}>{food.food.label.replace(food.food.brand + ' ', '')}</Text>
+                <Text style={styles.title}>{food.food.label.split(',')[0].replace(food.food.brand + ' ', '')}</Text>
                 <Text style={styles.brand}>{food.food.brand}</Text>
               </View>
               <Image style={{width: 100, height: 100}} source={food.food.image ? {uri: food.food.image} : {uri: 'https://p.kindpng.com/picc/s/79-798754_hoteles-y-centros-vacacionales-dish-placeholder-hd-png.png'}}></Image>

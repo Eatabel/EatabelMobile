@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {Component} from 'react';
-import { Animated, AsyncStorage, Easing, Image, StyleSheet, Text, View } from 'react-native';
+import { Animated, AsyncStorage, Easing, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import axios from 'axios';
 import { colors, icons, fontMappings, restrictedMappings, sizes } from '../constants';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -12,9 +12,10 @@ class Product extends Component {
     this.state = {
       productData: {},
       useProductData: false,
-      colors: ['#3393E4', '#715886'],
+      colors: ['#58e8b6', '#0ba341'],
       isEatabel: true,
       violations: [],
+      eatabelText: 'We could not retrieve an ingredient list for this product, it may or may not be Eatabel.'
     };
     this.spinValue = new Animated.Value(0);
   }
@@ -38,16 +39,35 @@ class Product extends Component {
   componentDidMount() {
     this.runAnimation();
     this.getPrefs();
-    AsyncStorage.setItem('currentUPC', '044300106376');
-    AsyncStorage.getItem('currentUPC')
-      .then((data) => {
-        return axios.get(`http://192.168.1.19:3000/searchUPC/${data}`);
+    AsyncStorage.getItem('foodLookup')
+      .then((lookupType) => {
+        if (lookupType === 'upc') {
+          AsyncStorage.getItem('currentUPC')
+            .then((data) => {
+              return axios.get(`http://192.168.1.19:3000/searchUPC/${data}`);
+            })
+            .then((response) => {
+              this.setState({useProduct: true, productData: response.data.hints[0]});
+              if (response.data.hints[0].food.foodContentsLabel !== undefined) {
+                this.isEatabel(response.data.hints[0].food.foodContentsLabel.toLowerCase().split(' '));
+              } else {
+                this.setState({colors: ['#ffdf69', '#bf9600']});
+              }
+            }
+            )
+        } else {
+          AsyncStorage.getItem('foodItem')
+            .then((stringFoodData) => {
+              const foodData = JSON.parse(stringFoodData);
+              this.setState({useProduct: true, productData: foodData});
+              if (foodData.food.foodContentsLabel) {
+                this.isEatabel(foodData.food.foodContentsLabel.toLowerCase().split(' '));
+              } else {
+                this.setState({colors: ['#ffdf69', '#bf9600']});
+              }
+            });
+        }
       })
-      .then((response) => {
-        this.setState({useProduct: true, productData: response.data});
-        this.isEatabel(response.data.hints[0].food.foodContentsLabel.toLowerCase().split(' '));
-      }
-      )
       .catch((response) => console.log('Error Fetching API Data'));
   }
 
@@ -55,7 +75,7 @@ class Product extends Component {
     var restrictedIngredients = this.state.restrictions;
     var violations = [];
     var isEatabel = true;
-    var cleanedIngredients = ingredients.map((ingredient) => ingredient.replace(';', ''));
+    var cleanedIngredients = ingredients.map((ingredient) => ingredient.replace(';', '').replace(',', '').replace('.', ''));
     for (var i = 0; i < restrictedIngredients.length; i++) {
       if (cleanedIngredients.includes(restrictedIngredients[i])) {
         isEatabel = false;
@@ -64,6 +84,8 @@ class Product extends Component {
     }
     if (!isEatabel) {
       this.setState({colors: ['#ed5374', '#c21b1b']});
+    } else {
+      this.setState({eatabelText: 'This Item is Eatabel!'});
     }
     this.setState({violations, isEatabel});
   }
@@ -92,13 +114,13 @@ class Product extends Component {
 
   renderedProduct () {
     let product = this.state.productData;
-    const ingredients = product.hints[0].food.foodContentsLabel;
+    const ingredients = product.food.foodContentsLabel;
     return (
       <View style={styles.container}>
-        <Image style={{width: 100, height: 100}} source={{uri: product.hints[0].food.image}}></Image>
-        <Text style={styles.title}>{product.hints[0].food.brand}</Text>
-        <Text style={styles.subtitle}>{product.hints[0].food.label}</Text>
-        {this.state.isEatabel ? <Text style={styles.eatabel}>This Item is Eatabel!</Text> :
+        <Image style={{width: 100, height: 100}} source={{uri: product.food.image}}></Image>
+        <Text style={styles.title}>{product.food.label.split(',')[0]}</Text>
+        <Text style={styles.subtitle}>{product.food.brand}</Text>
+        {this.state.isEatabel ? <Text style={styles.eatabel}>{this.state.eatabelText}</Text> :
           <View>
             <Text style={styles.eatabel}>This item is NOT Eatabel</Text>
             <Text style={styles.reasoning}>due to the presence of {this.state.violations.map((violation) => violation)}</Text>
@@ -129,8 +151,21 @@ class Product extends Component {
           alignItems: 'center',
           borderRadius: 5,
         }}>
-        <View style={styles.container}>
-          {this.state.useProduct ? this.renderedProduct() : loadingScreen}
+        <View>
+          <TouchableOpacity style={styles.backButton} onPress={() => this.props.navigation.goBack()}>
+            <Image
+              source={icons.back}
+              resizeMode="contain"
+              style={{
+                width: 20,
+                height: 100,
+                tintColor: 'white',
+              }}
+            />
+          </TouchableOpacity>
+          <View style={styles.container}>
+            {this.state.useProduct ? this.renderedProduct() : loadingScreen}
+          </View>
         </View>
       </LinearGradient>
 
@@ -152,7 +187,7 @@ const styles = StyleSheet.create({
   subtitle: {
     fontFamily: 'BrandonRegular',
     color: 'white',
-    fontSize: 20,
+    fontSize: 15,
   },
   eatabel: {
     marginTop: 20,
@@ -160,6 +195,7 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 15,
     textAlign: 'center',
+    paddingHorizontal: 40,
   },
   reasoning: {
     fontFamily: 'BrandonRegular',
@@ -167,7 +203,9 @@ const styles = StyleSheet.create({
     fontSize: 12,
     textAlign: 'center',
   },
-
+  backButton: {
+    justifyContent: 'flex-start',
+  }
 });
 
 export default Product;
